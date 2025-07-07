@@ -11,21 +11,21 @@ const Detalle = () => {
     const [error, setError] = useState(null);
     const [trailers, setTrailers] = useState([]);
     const [selectedTrailer, setSelectedTrailer] = useState(null);
-    const playerRef = useRef(null); // Referencia para el reproductor de YouTube
+    const playerRef = useRef(null);
 
     const navigate = useNavigate();
-    const params = useParams()
+    const params = useParams();
     let tipo = params.tipo;
     let id = params.id;
     let API = "";
     let APIVideos = "";
 
-    if (tipo == "cine") {
+    if (tipo === "cine") {
         API = `https://api.themoviedb.org/3/movie/${id}?api_key=ecbcdcf9044928d12b179d9153f5a269&language=es-ES`;
-        APIVideos = `https://api.themoviedb.org/3/movie/${id}/videos?api_key=ecbcdcf9044928d12b179d9153f5a269&language=en-US`
+        APIVideos = `https://api.themoviedb.org/3/movie/${id}/videos?api_key=ecbcdcf9044928d12b179d9153f5a269&language=es-ES`;
     } else {
         API = `https://api.themoviedb.org/3/tv/${id}?api_key=ecbcdcf9044928d12b179d9153f5a269&language=es-ES`;
-        APIVideos = `https://api.themoviedb.org/3/tv/${id}/videos?api_key=ecbcdcf9044928d12b179d9153f5a269&language=en-US`
+        APIVideos = `https://api.themoviedb.org/3/tv/${id}/videos?api_key=ecbcdcf9044928d12b179d9153f5a269&language=es-ES`;
     }
 
     const getDatos = async () => {
@@ -45,12 +45,59 @@ const Detalle = () => {
 
     const getVideo = async () => {
         try {
-            const response = await fetch(APIVideos);
-            const data = await response.json();
-            const ytTrailers = data.results.filter(
+            // Primero obtenemos los trailers en español
+            const responseES = await fetch(APIVideos);
+            const dataES = await responseES.json();
+            
+            // Luego obtenemos los trailers en inglés
+            const APIVideosEN = APIVideos.replace('language=es-ES', 'language=en-US');
+            const responseEN = await fetch(APIVideosEN);
+            const dataEN = await responseEN.json();
+
+            // Combinamos y filtramos los trailers
+            const allTrailers = [...(dataES.results || []), ...(dataEN.results || [])];
+            
+            const ytTrailers = allTrailers.filter(
                 (v) => v.type === "Trailer" && v.site === "YouTube"
             );
-            setTrailers(ytTrailers);
+
+            // Eliminamos duplicados (mismo key)
+            const uniqueTrailers = ytTrailers.reduce((acc, current) => {
+                const x = acc.find(item => item.key === current.key);
+                if (!x) {
+                    return acc.concat([current]);
+                } else {
+                    return acc;
+                }
+            }, []);
+
+            // Ordenamos: primero trailers en español, luego en inglés
+            const sortedTrailers = uniqueTrailers.sort((a, b) => {
+                if ((a.iso_639_1 === 'es' || a.iso_639_1 === 'es-ES') && 
+                    (b.iso_639_1 !== 'es' && b.iso_639_1 !== 'es-ES')) {
+                    return -1;
+                }
+                if ((b.iso_639_1 === 'es' || b.iso_639_1 === 'es-ES') && 
+                    (a.iso_639_1 !== 'es' && a.iso_639_1 !== 'es-ES')) {
+                    return 1;
+                }
+                return 0;
+            });
+
+            // Si no hay trailers en español, agregamos uno genérico basado en el inglés
+            if (!sortedTrailers.some(t => t.iso_639_1 === 'es' || t.iso_639_1 === 'es-ES') && 
+                sortedTrailers.length > 0) {
+                const englishTrailer = sortedTrailers.find(t => t.iso_639_1 === 'en');
+                if (englishTrailer) {
+                    sortedTrailers.unshift({
+                        ...englishTrailer,
+                        name: `Tráiler en Español - ${englishTrailer.name}`,
+                        iso_639_1: 'es'
+                    });
+                }
+            }
+
+            setTrailers(sortedTrailers);
             setLoading(false);
         } catch (err) {
             setError(err.message);
@@ -73,7 +120,6 @@ const Detalle = () => {
         }
     };
 
-    // Función para manejar cuando el reproductor está listo
     const onPlayerReady = (event) => {
         playerRef.current = event.target;
     };
@@ -83,14 +129,13 @@ const Detalle = () => {
         getReparto();
         getVideo();
 
-        // Limpiar selectedTrailer y detener el video cuando se cierre el modal
         const modalEl = document.getElementById("modalTrailers");
         if (modalEl) {
             modalEl.addEventListener("hidden.bs.modal", () => {
                 setSelectedTrailer(null);
                 if (playerRef.current) {
-                    playerRef.current.stopVideo(); // Detener el video
-                    playerRef.current = null; // Limpiar la referencia
+                    playerRef.current.stopVideo();
+                    playerRef.current = null;
                 }
             });
         }
@@ -158,7 +203,9 @@ const Detalle = () => {
                                 data-bs-target="#modalTrailers"
                                 onClick={() => {
                                     if (trailers.length > 0) {
-                                        setSelectedTrailer(trailers[0]); // Seleccionar el primer tráiler al abrir el modal
+                                        // Priorizar trailer en español
+                                        const esTrailer = trailers.find(t => t.iso_639_1 === 'es' || t.iso_639_1 === 'es-ES');
+                                        setSelectedTrailer(esTrailer || trailers[0]);
                                     }
                                 }}
                             >
@@ -176,7 +223,7 @@ const Detalle = () => {
             </div>
 
             {Array.isArray(datareparto) && (
-                <section className="container  py-5">
+                <section className="container py-5">
                     <h3 className="text-center text-white py-4">Reparto de la pelicula ({Array.isArray(datareparto) && datareparto.length}) actores</h3>
                     <div className="row row-cols-lg-6 m-2 justify-content-center">
                         {datareparto.map((item, index) => (
@@ -196,8 +243,8 @@ const Detalle = () => {
                     <div className="row">
                         {Array.isArray(dataproduccion) && dataproduccion.map((item, index) => (
                             item.profile_path && item.profile_path !== "" ? (
-                                <div className="col-6 col-sm-6 col-md-4 col-ls-3  mb-4" key={index}>
-                                    <div className="card mb-3 bg-secondary"  >
+                                <div className="col-6 col-sm-6 col-md-4 col-ls-3 mb-4" key={index}>
+                                    <div className="card mb-3 bg-secondary">
                                         <div className="row g-0">
                                             <div className="col-md-4 m-0">
                                                 <img src={ruta + item.profile_path} className="card-img-top" alt="..." />
@@ -205,7 +252,7 @@ const Detalle = () => {
                                             <div className="col-md-8">
                                                 <div className="card-body">
                                                     <p className="text-dark">
-                                                        <b> {item.name}</b><br /><br />
+                                                        <b>{item.name}</b><br /><br />
                                                         <b>Departamento: </b>
                                                         {item.department}<br /><br />
                                                         <b>Cargo:</b> {item.job}<br /><br />
@@ -221,36 +268,29 @@ const Detalle = () => {
                 </section>
             )}
 
-            {/* Modal de Trailers */}
             {trailers.length > 0 && (
-                <div className="modal fade" id="modalTrailers" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div className="modal-dialog modal-xl">
-                        <div className="modal-content bg-dark text-white">
-                            <div className="modal-header">
-                                <h5 className="modal-title" id="exampleModalLabel">Selecciona un Trailer</h5>
-                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div className="modal fade" id="modalTrailers" tabIndex="-1" aria-labelledby="trailerModalLabel" aria-hidden="true">
+                    <div className="modal-dialog modal-dialog-centered modal-lg">
+                        <div className="modal-content bg-dark text-white border border-warning">
+                            <div className="modal-header border-bottom border-info">
+                                <h2 className="modal-title fw-bold text-white">
+                                    <i className="bi bi-play-circle-fill me-2 text-info"></i>Trailers Disponibles
+                                </h2>
+                                <button
+                                    type="button"
+                                    className="btn-close btn-close-white"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"
+                                    onClick={() => {
+                                        if (playerRef.current) {
+                                            playerRef.current.stopVideo();
+                                        }
+                                    }}
+                                ></button>
                             </div>
-                            <div className="modal-body">
-                                {/* Selector de tráilers */}
-                                <div className="mb-4 text-center">
-                                    <h5>Elige un trailer:</h5>
-                                    <div className="d-flex justify-content-center flex-wrap gap-2">
-                                        {trailers.map((t, index) => (
-                                            <button
-                                                key={t.key}
-                                                className={`btn btn-sm ${selectedTrailer?.key === t.key ? "btn-primary" : "btn-outline-light"}`}
-                                                onClick={() => setSelectedTrailer(t)}
-                                            >
-                                                Trailer {index + 1}
-                                                {t.name && `: ${t.name}`}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Reproductor */}
+                            <div className="modal-body p-0">
                                 {selectedTrailer && (
-                                    <div className="ratio ratio-16x9">
+                                    <div className="ratio ratio-16x9 bg-black">
                                         <YouTube
                                             videoId={selectedTrailer.key}
                                             opts={{
@@ -259,18 +299,44 @@ const Detalle = () => {
                                                 playerVars: {
                                                     autoplay: 1,
                                                     modestbranding: 1,
-                                                    rel: 0
+                                                    rel: 0,
+                                                    controls: 1,
+                                                    fs: 1
                                                 },
                                             }}
                                             onReady={onPlayerReady}
+                                            className="youtube-iframe"
                                         />
                                     </div>
                                 )}
+
+                                <div className="p-3 bg-dark-gradient">
+                                    <h5 className="mb-3 text-center text-white">
+                                        <i className="bi bi-collection-play me-2"></i>Selecciona otro trailer:
+                                    </h5>
+                                    <div className="d-flex flex-wrap justify-content-center gap-2">
+                                        {trailers.map((t, index) => (
+                                            <button
+                                                key={t.key + index}
+                                                className={`btn ${selectedTrailer?.key === t.key
+                                                    ? "btn-warning"
+                                                    : "btn-outline-warning"}`}
+                                                onClick={() => setSelectedTrailer(t)}
+                                            >
+                                                <i className="bi bi-play-fill me-1"></i>
+                                                {t.name}
+                                                {t.iso_639_1 === "en" && " 🇬🇧"}
+                                                {(t.iso_639_1 === "es" || t.iso_639_1 === "es-ES") && " 🇪🇸"}
+                                                {t.official && " ✔️"}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
-                            <div className="modal-footer">
+                            <div className="modal-footer border-top border-danger">
                                 <button
                                     type="button"
-                                    className="btn btn-secondary"
+                                    className="btn btn-outline-light"
                                     data-bs-dismiss="modal"
                                     onClick={() => {
                                         if (playerRef.current) {
@@ -278,7 +344,7 @@ const Detalle = () => {
                                         }
                                     }}
                                 >
-                                    Cerrar
+                                    <i className="bi bi-x-circle me-1"></i> Cerrar
                                 </button>
                             </div>
                         </div>
