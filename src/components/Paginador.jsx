@@ -4,16 +4,16 @@ const Paginador = ({ page, setPage, totalPages }) => {
         const visiblePages = [];
         let startPage = Math.max(1, page - 2);
         let endPage = Math.min(totalPages, startPage + 4);
-        
+
         // Ajustar si estamos cerca del final
         if (endPage - startPage < 4) {
             startPage = Math.max(1, endPage - 4);
         }
-        
+
         for (let i = startPage; i <= endPage; i++) {
             visiblePages.push(i);
         }
-        
+
         return visiblePages;
     };
 
@@ -25,8 +25,8 @@ const Paginador = ({ page, setPage, totalPages }) => {
                 <ul className="pagination pagination-lg mb-0 py-4">
                     {/* Botón Anterior */}
                     <li className={`page-item ${page === 1 ? 'disabled' : ''}`}>
-                        <button 
-                            className="page-link bg-gray-800 text-gray-300 border-gray-700 hover:bg-red-700 hover:text-white" 
+                        <button
+                            className="page-link bg-gray-800 text-gray-300 border-gray-700 hover:bg-red-700 hover:text-white"
                             aria-label="Previous"
                             onClick={() => setPage(Math.max(1, page - 1))}
                             disabled={page === 1}
@@ -39,8 +39,8 @@ const Paginador = ({ page, setPage, totalPages }) => {
                     {visiblePages[0] > 1 && (
                         <>
                             <li className="page-item">
-                                <button 
-                                    className="page-link bg-gray-800 text-gray-300 border-gray-700 hover:bg-red-700 hover:text-white" 
+                                <button
+                                    className="page-link bg-gray-800 text-gray-300 border-gray-700 hover:bg-red-700 hover:text-white"
                                     onClick={() => setPage(1)}
                                 >
                                     1
@@ -56,13 +56,13 @@ const Paginador = ({ page, setPage, totalPages }) => {
 
                     {/* Páginas visibles */}
                     {visiblePages.map((pageNum) => (
-                        <li 
-                            key={pageNum} 
+                        <li
+                            key={pageNum}
                             className={`page-item ${pageNum === page ? 'active' : ''}`}
                         >
-                            <button 
-                                className={`page-link ${pageNum === page 
-                                    ? 'bg-red-600 border-red-600 hover:bg-red-700' 
+                            <button
+                                className={`page-link ${pageNum === page
+                                    ? 'bg-red-600 border-red-600 hover:bg-red-700'
                                     : 'bg-gray-800 text-gray-300 border-gray-700 hover:bg-gray-700 hover:text-white'}`}
                                 onClick={() => setPage(pageNum)}
                             >
@@ -80,8 +80,8 @@ const Paginador = ({ page, setPage, totalPages }) => {
                                 </li>
                             )}
                             <li className="page-item">
-                                <button 
-                                    className="page-link bg-gray-800 text-gray-300 border-gray-700 hover:bg-red-700 hover:text-white" 
+                                <button
+                                    className="page-link bg-gray-800 text-gray-300 border-gray-700 hover:bg-red-700 hover:text-white"
                                     onClick={() => setPage(totalPages)}
                                 >
                                     {totalPages}
@@ -92,8 +92,8 @@ const Paginador = ({ page, setPage, totalPages }) => {
 
                     {/* Botón Siguiente */}
                     <li className={`page-item ${page === totalPages ? 'disabled' : ''}`}>
-                        <button 
-                            className="page-link bg-gray-800 text-gray-300 border-gray-700 hover:bg-red-700 hover:text-white" 
+                        <button
+                            className="page-link bg-gray-800 text-gray-300 border-gray-700 hover:bg-red-700 hover:text-white"
                             aria-label="Next"
                             onClick={() => setPage(Math.min(totalPages, page + 1))}
                             disabled={page === totalPages}
