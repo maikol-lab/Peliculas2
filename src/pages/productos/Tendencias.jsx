@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import Paginador from "../components/Paginador";
-import CardPeliculas from "../components/CardPeliculas";
 import { Link, useParams } from "react-router-dom";
-
+import CardPeliculas from "../../components/card/Cardpeliculas";
+import Paginador from "../../components/Paginador";
 
 const Tendencias = () => {
     const [datos, setDatos] = useState([]);

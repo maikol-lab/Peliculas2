@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
-import FiltroGenerosCine from "./FiltroGenerosCine"
-import FiltroGenerosTv from "./FiltroGenerosTv"
+import FiltroGenerosCine from "./filtro/FiltroGenerosCine";
+import FiltroGenerosTv from "./filtro/FiltroGenerosTv";
 import { useNavigate } from 'react-router-dom';
 import { useState } from "react";
 import logo from '../assets/logo.jpg';
@@ -25,7 +25,7 @@ const Header = () => {
       <div className="row gx-0 wow fadeIn" data-wow-delay="0.1s">
         <div className="col-lg-3 d-none d-lg-block" style={{ backgroundColor: 'rgba(28,0,27,255)' }}>
           <a href="index.html" className="navbar-brand w-100 h-100 m-0 p-0 d-flex align-items-center justify-content-center">
-            <h1 className="m-0 display-6 text-white text-uppercase"><img src={logo} width={200} alt="" className="img-fluid"/></h1>
+            <h1 className="m-0 display-6 text-white text-uppercase"><img src={logo} width={200} alt="" className="img-fluid" /></h1>
           </a>
         </div>
         <div className="col-lg-9">
@@ -84,4 +84,4 @@ const Header = () => {
   )
 }
 
-export default Header
+export default Header;

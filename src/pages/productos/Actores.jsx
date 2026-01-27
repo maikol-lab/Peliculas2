@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import Paginador from "../components/Paginador";
+import Paginador from "../../components/Paginador";
 import { useParams } from "react-router-dom";
-import CardActores from "../components/CardActores";
+import CardActores from "../../components/card/CardActores";
 
 
 const Actores = () => {

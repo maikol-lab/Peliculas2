@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-
-import Paginador from "../components/Paginador";
+import Paginador from "../../components/Paginador";
+import CardPeliculas from "../../components/card/Cardpeliculas";
 import { useParams } from "react-router-dom";
-import CardPeliculas from "../components/CardPeliculas";
 
 
 const Generos = () => {

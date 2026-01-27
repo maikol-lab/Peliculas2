@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import Paginador from "../components/Paginador";
 import { useLocation  } from "react-router-dom";
-import CardPeliculas from "../components/CardPeliculas";
-import CardActores from "../components/CardActores";
-
-
+import CardActores from "../components/card/CardActores";
+import CardPeliculas from "../components/card/Cardpeliculas";
 
 const Busquedas = () => {
     const [datos, setDatos] = useState([]);

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import CardPeliculas from "../components/CardPeliculas";
+import CardPeliculas from "../../components/card/Cardpeliculas";
 
 const API = 'https://api.themoviedb.org/3/person/${id}/credits?api_key=ecbcdcf9044928d12b179d9153f5a269&language=es-ES&sort_by=popularity.desc';
 

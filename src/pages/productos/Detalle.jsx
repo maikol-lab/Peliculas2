@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import YouTube from "react-youtube";
-import CardActores from "../components/CardActores";
+import CardActores from "../../components/card/CardActores";
 
 const Detalle = () => {
     const [datos, setDatos] = useState([]);
