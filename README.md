@@ -54,7 +54,7 @@ API REST para la gestión de películas, desarrollada con Node.js.
 
 ## Requisitos Previos
 
-- **Node.js** >= 18
+- **Node.js** >= 20
 - **npm** >= 9
 
 ## Instalación
