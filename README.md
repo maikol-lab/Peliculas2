@@ -7,6 +7,12 @@ API REST para la gestión de películas, desarrollada con Node.js.
 ![React](https://img.shields.io/badge/React-18.x-61DAFB?style=for-the-badge&logo=react)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-5.x-7952B3?style=for-the-badge&logo=bootstrap)
 ![JX](https://img.shields.io/badge/JX-Backend-000000?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHBvbHlsaW5lIHBvaW50cz0iMTIgMiAyIDcgMTIgMTIgMjIgNyAxMiAyIi8+PHBvbHlsaW5lIHBvaW50cz0iMiAxNyAxMiAyMiAyMiAxNyIvPjwvc3ZnPg==)
+[React Router](https://img.shields.io/badge/React_Router-7.x-CA4245?style=for-the-badge&logo=react-router)
+![React Icons](https://img.shields.io/badge/React_Icons-5.x-E10098?style=for-the-badge&logo=react)
+![Animate.css](https://img.shields.io/badge/Animate.css-4.x-F552B8?style=for-the-badge)
+![WOW.js](https://img.shields.io/badge/WOW.js-1.x-FF6B6B?style=for-the-badge)
+![ESLint](https://img.shields.io/badge/ESLint-9.x-4B32C3?style=for-the-badge&logo=eslint)
+![gh-pages](https://img.shields.io/badge/gh--pages-6.x-222222?style=for-the-badge&logo=github-pages)
 
 ## Demo
 
