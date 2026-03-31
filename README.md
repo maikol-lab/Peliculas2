@@ -162,9 +162,9 @@ VITE_TMDB_API_KEY=tu_api_key_aqui
 
 ## Documentación Adicional
 
-- [Arquitectura del Proyecto](docs/architecture.md)
-- [API Reference](docs/api-reference.md)
-- [Guía de Troubleshooting](docs/troubleshooting.md)
+- [Arquitectura del Proyecto](docs/ARCHITECTURE.md)
+- [API Reference](docs/API_REFERENCE.md)
+- [Guía de Troubleshooting](docs/TROUBLESHOOTING.md)
 
 ## Licencia
 
